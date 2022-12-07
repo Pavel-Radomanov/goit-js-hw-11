@@ -8,7 +8,28 @@
     <script type="module" src="./index.js"></script>
   </head>
   <body>
+    <div>
+    <form class="search-form" id="search-form">
+      <input class="input"
+        type="text"
+        name="searchQuery"
+        autocomplete="off"
+        placeholder="Search images..."
+      />
+      <button class="button" type="submit"><img src="images/free-animated-icon-search.png" alt="logo" width="15" /></button>
+    </form>
+  </div>
+  <div class="gallery-list">
+    <!-- Карточки изображений ul may be-->
+  </div>
+  <div class="btn">
+    <button type="button" class="button-more"data-action="load-more">
+      <span>Show more</span>
+    </button>
+  </div>
     <!-- ❗️❗️❗️ Add partials like so for every page -->
-    <include src="./partials/example.html"></include>
+    <!-- <include src="./partials/example.html"></include> -->
+    <script src="index.js" type="module"></script>
+
   </body>
 </html>

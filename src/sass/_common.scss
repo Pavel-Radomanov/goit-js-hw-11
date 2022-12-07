@@ -1,1 +1,28 @@
 @import '~node_modules/modern-normalize/modern-normalize.css';
+
+.search-form {
+    display: flex;
+justify-content: center;
+    font-family: monospace;
+    font-size: 22px;
+    font-weight: 700;
+    background-color: #393246;
+    color: #fff;
+    padding: 40px;
+    border-radius: 2px;
+  }
+.button-more {
+
+font-family: monospace;
+font-size: 22px;
+font-weight: 700;
+background-color:#fff ;
+color:#393246;
+padding: 5px 25px;
+border-radius: 2px;
+}
+.btn {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center; 
+}
