@@ -11,7 +11,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 const refs = {
 searchForm:document.querySelector("#search-form"),
 imageContainer:document.querySelector(".gallery-list"),
-imageList:document.querySelector(".gallery-item"),
+imageItem:document.querySelector(".gallery-item"),
 // loadMoreBtn:document.querySelector(".button-load"),
 // loadMoreBtn:document.querySelector('[data-action"load-more"]'),
 };
@@ -69,7 +69,7 @@ function onSearchImage(event){
     console.log(serviceAPI.query);
     serviceAPI.resetPage();
     // return promise from fetch
-    serviceAPI.fetchAPIService().then(hits => getImageCard(hits));
+    serviceAPI.fetchAPIService().then(hits => getImageCards(hits));
 }
 
 
@@ -77,42 +77,44 @@ function onLoadMore(){
     serviceAPI.fetchAPIService();  
 }
 
-function getImageCard(data){
+function getImageCards(data){
     console.log(data);
 
-    const markup = data.results.map(() => {
+    const markup = data.map((hit) => {
         // console.log(markup);
         return `<div class="photo-card">
            
-           <img src="${hits.previewURL}" alt="" loading="lazy" />
+           <img src="${hit.previewURL}" alt="${hit.tags}" loading="lazy" />
            <div class="info">
     <p class="info-item">
-      <b>Likes</b>
+      <b>Likes: ${hit.likes}</b>
     </p>
     <p class="info-item">
-      <b>Views</b>
+      <b>Views: ${hit.views}</b>
     </p>
     <p class="info-item">
-      <b>Comments</b>
+      <b>Comments: ${hit.comments}</b>
     </p>
     <p class="info-item">
-      <b>Downloads</b>
+      <b>Downloads: ${hit.downloads}</b>
     </p>
   </div>
 </div>`
 }).join('');
-        //    refs.countryList.innerHTML=markup;
-           refs.imageList.insertAdjacentHTML('beforeEnd', markup);
+        //    refs.imageList.innerHTML=markup;
+           refs.imageContainer.insertAdjacentHTML('beforeEnd', markup);
            console.log(markup); 
  
 }
 // getImageCard();
 
 function appendImageMarkUp(hits){
-    refs.imageContainer.insertAdjacentHTML('beforeend',getImageCard(hits));
+    refs.imageContainer.insertAdjacentHTML('beforeend',getImageCards(hits));
 }
 
-
+function clearImageContainer(){
+    refs.imageContainer.innerHTML='';
+}
 
 
 
