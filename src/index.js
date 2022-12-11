@@ -6,7 +6,7 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 // import serviceAPI from './partials/serviceAPI.js';
 
-const axios = require('axios').default;
+const axios = require('axios');
 
 const refs = {
 searchForm:document.querySelector("#search-form"),
