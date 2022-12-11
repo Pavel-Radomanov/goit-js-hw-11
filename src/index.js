@@ -6,40 +6,99 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 // import serviceAPI from './partials/serviceAPI.js';
 
-
+const axios = require('axios').default;
 
 const refs = {
 searchForm:document.querySelector("#search-form"),
 imageContainer:document.querySelector(".gallery-list"),
 imageItem:document.querySelector(".gallery-item"),
 // loadMoreBtn:document.querySelector(".button-load"),
-// loadMoreBtn:document.querySelector('[data-action"load-more"]'),
+loadMoreBtn:document.querySelector(".button-more"),
 };
 
 refs.searchForm.addEventListener('submit',onSearchImage);
-// refs.loadMoreBtn.addEventListener('click',onLoadMore);
+refs.loadMoreBtn.addEventListener('click',onLoadMore);
+document.getElementById('btn-more').hidden = true;
 
+const galleryLightbox = {
+    startLightbox() {
+      this.galleryLightbox = new SimpleLightbox('.js-image-card a', {captionsData: 'alt',captionDelay: 250,close: false,showCounter: false,
+      });
+    },
+  
+    // refreshLightbox() {
+    //   this.galleryLightbox.refresh();
+    // },
+  }; 
+  
 class serviceAPI{
     constructor(){
         this.searchQuery='';
         this.page=1;
     }
- fetchAPIService() {
-        console.log(this.searchQuery);
+    async fetchAPIService() {
+        try {
         const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
-    
-        return   fetch(urlRequest)
-    .then(response => response.json())
-    // .then(console.log)
-    .then(data => {
-        this.countPage();
-        console.log(data);
-        // extract data from promise - callback
-        return data.hits
+            return await axios.get(urlRequest)
+                .then(response => { 
+                return response.data;
+            }).then(data => {
+                if (data.hits.length === 0) {
+                                document.getElementById('btn-more').hidden = true;        
+                                Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+                            }
+                            else {
+                                document.getElementById('btn-more').hidden = false;
+                            }
+                            if (data.totalHits <= this.page * 40) {
+                                document.getElementById('btn-more').hidden = true; 
+
+                                Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+                            }
+                            this.countPage();
+                            console.log(data);
+                        //  startLightbox()   
+                            
+                            return data.hits
+            })
+        } 
+        catch (error) {
+            console.log(error);
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        }
+        }
+// 2-nd variant without async and axios
+
+//  fetchAPIService() {
+//         console.log(this.searchQuery);    
+//         const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`  
+//         return   fetch(urlRequest)
+//     .then(response => response.json())
+//     // .then(console.log)
+//     .then(data => {
+//         if (data.hits.length === 0) {
+//             document.getElementById('btn-more').hidden = true;        
+//             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+//         }
+//         else {
+//             document.getElementById('btn-more').hidden = false;
+//         }
+//         if (data.totalHits <= this.page * 40) {
+//             document.getElementById('btn-more').hidden = true; 
+//             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+//         }
+//         this.countPage();
+//         console.log(data);
+//         // extract data from promise - callback
         
-        // this.page += 1;
-    })
-    }
+//         return data.hits
+//         // this.page += 1;
+//     })
+//     .catch(error => {
+//             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+//         });  
+// }
+
 countPage(){
     this.page += 1;
 }
@@ -55,9 +114,6 @@ resetPage(){
 }
 
 
-
-
-
 serviceAPI = new serviceAPI();
 console.log(serviceAPI);
 
@@ -65,16 +121,24 @@ console.log(serviceAPI);
 
 function onSearchImage(event){
     event.preventDefault();
-    serviceAPI.query=event.currentTarget.elements.searchQuery.value;
+    clearImageContainer();
+    // refs.imageContainer.innerHTML = '';
+
+    serviceAPI.query=event.currentTarget.elements.searchQuery.value.trim();
     console.log(serviceAPI.query);
     serviceAPI.resetPage();
+
     // return promise from fetch
-    serviceAPI.fetchAPIService().then(hits => getImageCards(hits));
+    // serviceAPI.fetchAPIService().then(hits => getImageCards(hits));
+    serviceAPI.fetchAPIService().then(getImageCards);
+    galleryLightbox.startLightbox();
 }
 
 
-function onLoadMore(){
-    serviceAPI.fetchAPIService();  
+function onLoadMore(event){
+    event.preventDefault();
+    serviceAPI.fetchAPIService().then(getImageCards);  
+    galleryLightbox.startLightbox();
 }
 
 function getImageCards(data){
@@ -82,9 +146,10 @@ function getImageCards(data){
 
     const markup = data.map((hit) => {
         // console.log(markup);
-        return `<div class="photo-card">
-           
-           <img src="${hit.previewURL}" alt="${hit.tags}" loading="lazy" />
+    return `<div class="js-image-card">
+        <a href="${hit.largeImageURL}">
+            <img class="js-image" src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" />
+        </a>
            <div class="info">
     <p class="info-item">
       <b>Likes: ${hit.likes}</b>
@@ -104,7 +169,8 @@ function getImageCards(data){
         //    refs.imageList.innerHTML=markup;
            refs.imageContainer.insertAdjacentHTML('beforeEnd', markup);
            console.log(markup); 
- 
+           galleryLightbox.startLightbox();
+          
 }
 // getImageCard();
 
