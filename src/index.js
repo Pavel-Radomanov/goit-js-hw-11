@@ -6,7 +6,7 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 // import serviceAPI from './partials/serviceAPI.js';
 
-const axios = require('axios');
+// const axios = require('axios');
 
 const refs = {
 searchForm:document.querySelector("#search-form"),
@@ -38,70 +38,71 @@ class serviceAPI{
     }
 
     // axios+async , dont deploy on git?
-    // async fetchAPIService() {
-    //     try {
-    //     const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
-    //         return await axios.get(urlRequest)
-    //             .then(response => { 
-    //             return response.data;
-    //         }).then(data => {
-    //             if (data.hits.length === 0) {
-    //                             document.getElementById('btn-more').hidden = true;        
-    //                             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-    //                         }
-    //                         else {
-    //                             document.getElementById('btn-more').hidden = false;
-    //                         }
-    //                         if (data.totalHits <= this.page * 40) {
-    //                             document.getElementById('btn-more').hidden = true; 
+    
+    async fetchAPIService() {
+        try {
+        const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
+            return await axios.get(urlRequest)
+                .then(response => { 
+                return response.data;
+            }).then(data => {
+                if (data.hits.length === 0) {
+                                document.getElementById('btn-more').hidden = true;        
+                                Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+                            }
+                            else {
+                                document.getElementById('btn-more').hidden = false;
+                            }
+                            if (data.totalHits <= this.page * 40) {
+                                document.getElementById('btn-more').hidden = true; 
 
-    //                             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-    //                         }
-    //                         this.countPage();
-    //                         console.log(data);
+                                Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+                            }
+                            this.countPage();
+                            console.log(data);
                        
                             
-    //                         return data.hits
-    //         })
-    //     } 
-    //     catch (error) {
-    //         console.log(error);
-    //         Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-    //     }
-    //     }
+                            return data.hits
+            })
+        } 
+        catch (error) {
+            console.log(error);
+            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+        }
+        }
 
 
 // 2-nd variant without async and axios
 
- fetchAPIService() {
-        console.log(this.searchQuery);    
-        const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`  
-        return   fetch(urlRequest)
-    .then(response => response.json())
-    // .then(console.log)
-    .then(data => {
-        if (data.hits.length === 0) {
-            document.getElementById('btn-more').hidden = true;        
-            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        }
-        else {
-            document.getElementById('btn-more').hidden = false;
-        }
-        if (data.totalHits <= this.page * 40) {
-            document.getElementById('btn-more').hidden = true; 
-            Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-        }
-        this.countPage();
-        console.log(data);
-        // extract data from promise - callback
+//  fetchAPIService() {
+//         console.log(this.searchQuery);    
+//         const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`  
+//         return   fetch(urlRequest)
+//     .then(response => response.json())
+//     // .then(console.log)
+//     .then(data => {
+//         if (data.hits.length === 0) {
+//             document.getElementById('btn-more').hidden = true;        
+//             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+//         }
+//         else {
+//             document.getElementById('btn-more').hidden = false;
+//         }
+//         if (data.totalHits <= this.page * 40) {
+//             document.getElementById('btn-more').hidden = true; 
+//             Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+//         }
+//         this.countPage();
+//         console.log(data);
+//         // extract data from promise - callback
         
-        return data.hits
-        // this.page += 1;
-    })
-    .catch(error => {
-            Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
-        });  
-}
+//         return data.hits
+//         // this.page += 1;
+//     })
+//     .catch(error => {
+//             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
+//         });  
+// }
 
 countPage(){
     this.page += 1;
