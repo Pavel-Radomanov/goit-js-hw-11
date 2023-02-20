@@ -4,7 +4,7 @@ import axios from "axios";
 import SimpleLightbox from "simplelightbox";
 
 import "simplelightbox/dist/simple-lightbox.min.css";
-// import serviceAPI from './partials/serviceAPI.js';
+// import serviceAPI from "./partials/serviceAPI.js";
 
 // const axios = require('axios');
 
@@ -37,13 +37,14 @@ class serviceAPI{
         this.page=1;
     }
 
-    // axios+async , dont deploy on git?
+  
     
     async fetchAPIService() {
         try {
         const urlRequest = `https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${this.searchQuery}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${this.page}`
             return await axios.get(urlRequest)
                 .then(response => { 
+                   
                 return response.data;
             }).then(data => {
                 if (data.hits.length === 0) {
@@ -60,18 +61,17 @@ class serviceAPI{
                             }
                             this.countPage();
                             console.log(data);
-                       
-                            
+                            console.log(data.total);
+                            const totalHits = data.total
+                            Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
                             return data.hits
             })
-        } 
+        }  
         catch (error) {
             console.log(error);
             Notiflix.Notify.failure('Sorry, there are no images matching your search query. Please try again.');
         }
         }
-
-
 // 2-nd variant without async and axios
 
 //  fetchAPIService() {
@@ -123,7 +123,6 @@ serviceAPI = new serviceAPI();
 console.log(serviceAPI);
 
 
-
 function onSearchImage(event){
     event.preventDefault();
     clearImageContainer();
@@ -148,9 +147,9 @@ function onLoadMore(event){
 
 function getImageCards(data){
     console.log(data);
-
+    
     const markup = data.map((hit) => {
-        // console.log(markup);
+        
     return `<div class="js-image-card">
         <a href="${hit.largeImageURL}">
             <img class="js-image" src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" />
@@ -171,9 +170,11 @@ function getImageCards(data){
   </div>
 </div>`
 }).join('');
+
         //    refs.imageList.innerHTML=markup;
            refs.imageContainer.insertAdjacentHTML('beforeEnd', markup);
-           console.log(markup); 
+        //    console.log(markup); 
+        
            galleryLightbox.startLightbox();
           
 }
@@ -207,7 +208,7 @@ function clearImageContainer(){
 //     event.preventDefault();
 //     const textInfoPicture = getElement(".input").value;
 //     // textInfoPicture = event.currentTarget.elements.searchQuerry.value;
-//     console.log(textInfoPicture);
+    // console.log(textInfoPicture);
 //     searchItem = textInfoPicture;  
 //     fetch(`https://pixabay.com/api/?key=31523940-001a34e6ef463768beef02e4d&q=${searchItem}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=1`)
 //     .then (response => 
